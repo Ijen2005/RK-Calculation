@@ -1,0 +1,155 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rajawali Kreatifbox — Box Calculator</title><style>:root{--bg:#f5f5f7;--card:#fff;--border:#e4e4ea;--text:#202026;--muted:#74747e;--purple:#6d4fc2;--purple-dark:#543b9f;--purple-soft:#f0ebff;--green:#16834d;--shadow:0 10px 28px rgba(35,30,60,.07)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}.nav{max-width:1180px;margin:auto;padding:15px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:800;letter-spacing:-.03em}.brand span{color:var(--purple)}.navlinks{display:flex;gap:7px}.navlinks a{padding:9px 13px;border-radius:10px;color:var(--muted);font-size:14px;font-weight:700;text-decoration:none}.navlinks a.active,.navlinks a:hover{background:var(--purple-soft);color:var(--purple)}.page{max-width:1180px;margin:auto;padding:42px 24px 64px}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:800;color:var(--purple)}h1{margin:8px 0 10px;font-size:42px;line-height:1.05;letter-spacing:-.045em}.lead{max-width:700px;color:var(--muted);line-height:1.6;margin:0 0 28px}.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:20px}.card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:24px}.card h2{margin:0 0 18px;font-size:18px}.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.form-grid.two{grid-template-columns:repeat(2,1fr)}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:750}input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:11px;background:#fff;color:var(--text);font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,79,194,.1)}textarea{min-height:115px;resize:vertical}.actions{display:flex;gap:10px;margin-top:18px}.btn{border:0;border-radius:11px;padding:12px 17px;font:inherit;font-weight:800;cursor:pointer}.btn.primary{background:var(--purple);color:#fff}.btn.primary:hover{background:var(--purple-dark)}.btn.secondary{background:#f0f0f3;color:var(--text)}.results{display:grid;gap:10px}.result{display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px solid var(--border);border-radius:12px;padding:13px 15px}.label{color:var(--muted);font-size:13px}.small{font-size:12px;color:var(--muted)}.value{font-weight:800}.result.final{background:var(--purple-soft);border-color:#ded3ff}.result.final .value{font-size:22px;color:var(--purple)}.note{font-size:12px;color:var(--muted);line-height:1.55}.table-card{margin-top:22px}.table-tools{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}.table-tools input{max-width:320px}.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:13px}table{width:100%;min-width:830px;border-collapse:collapse;background:#fff}th,td{padding:12px 13px;border-bottom:1px solid #efeff2;font-size:13px;text-align:left;white-space:nowrap}th{background:#fafafd;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}td.number{text-align:right;font-variant-numeric:tabular-nums}tr:last-child td{border-bottom:0}tr.highlight td{background:#f5f0ff}td.selected{box-shadow:inset 0 0 0 2px var(--purple);background:#faf7ff}.success{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:#ecf8f1;color:var(--green);font-weight:700}.request-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.summary-box{padding:12px;border-radius:11px;background:#f8f8fa;border:1px solid var(--border)}.summary-box b{display:block;margin-top:4px}@media(max-width:860px){.grid,.form-grid,.form-grid.two{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.page{padding-top:30px}h1{font-size:34px}.table-tools{align-items:stretch;flex-direction:column}.table-tools input{max-width:none}}
+
+/* Calculation formulas shown directly under each result label */
+.result-info { flex: 1; min-width: 0; }
+.result-info .label { display: block; font-weight: 700; }
+.formula-note { display: block; color: var(--muted); font-size: 12px; line-height: 1.45; margin-top: 4px; font-weight: 400; }
+.result .value { text-align: right; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.result.total-result { background: var(--purple-soft); border-color: #cfc0ff; }
+.result.total-result .value { color: var(--purple-dark); font-size: clamp(20px, 2.3vw, 26px); }
+@media (max-width: 600px) { .result { align-items: flex-start; } .result .value { max-width: 52%; } }
+
+/* Accessibility and responsive refinements */
+:root { color-scheme: light; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+body { font-size: 16px; line-height: 1.5; }
+.page { width: min(100%, 1180px); }
+.card, .field, .field-group, .form-section, .size-row { min-width: 0; }
+label { line-height: 1.35; color: #292832; }
+input, select, textarea, button, .btn { font-size: 16px; }
+input, select, textarea { min-height: 44px; }
+button, .btn, .navlinks a { min-height: 44px; }
+button, a, input, select, textarea { touch-action: manipulation; }
+:focus-visible { outline: 3px solid #4f3696 !important; outline-offset: 3px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { border-color: #4f3696; }
+.form-section { margin-top: 22px; }
+.section-heading { margin: 0 0 12px; font-size: 15px; line-height: 1.35; }
+.dimension-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.pair-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.field { min-width: 0; }
+.field input, .field select, .field textarea { min-width: 0; }
+.nav { flex-wrap: wrap; }
+.navlinks { flex-wrap: wrap; }
+.lead { font-size: 16px; }
+.result .value { overflow-wrap: anywhere; }
+.table-wrap { max-width: 100%; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+.table-wrap:focus-visible { outline-offset: 2px; }
+.small, .note { line-height: 1.55; }
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr; }
+  .page { padding: 30px 20px 48px; }
+  h1 { font-size: clamp(30px, 5vw, 38px); }
+  .card { padding: 20px; }
+}
+@media (max-width: 600px) {
+  .nav { padding: 12px 16px; gap: 10px; }
+  .navlinks { width: 100%; }
+  .navlinks a { flex: 1 1 auto; text-align: center; }
+  .page { padding: 24px 14px 40px; }
+  h1 { font-size: 30px; }
+  .card { padding: 17px; border-radius: 15px; }
+  .dimension-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .pair-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .field label { font-size: 13px; }
+  .actions { flex-wrap: wrap; }
+  .actions .btn { flex: 1 1 140px; }
+  .table-tools { align-items: stretch; flex-direction: column; }
+  .table-tools input { max-width: none; }
+  .size-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .result { align-items: flex-start; gap: 10px; }
+  .result .value { max-width: 60%; text-align: right; }
+}
+@media (max-width: 360px) {
+  .pair-grid, .dimension-grid, .size-grid { grid-template-columns: 1fr; }
+  .result { flex-direction: column; }
+  .result .value { max-width: 100%; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+
+/* Compact results with optional full breakdown */
+.quantity-grid { display: grid; grid-template-columns: minmax(0, 260px); }
+.calc-details { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.calc-details summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 44px; cursor: pointer; color: var(--purple-dark); font-weight: 750; list-style: none; }
+.calc-details summary::-webkit-details-marker { display: none; }
+.calc-details summary:focus-visible { outline: 3px solid #4f3696; outline-offset: 3px; border-radius: 6px; }
+.disclosure-icon { display: inline-grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border-radius: 50%; background: var(--purple-soft); position: relative; }
+.disclosure-icon::before { content: "+"; font-size: 20px; line-height: 1; }
+.calc-details[open] .disclosure-icon::before { content: "−"; }
+.detail-results { margin-top: 12px; }
+.result.total-result { background: #f7f4ff; border-color: #d7ccfa; }
+.result.total-result .value { color: var(--purple-dark); font-size: clamp(20px, 2.3vw, 26px); }
+#PRICESETTINGS { display: block; margin-top: 5px; }
+@media (max-width: 600px) {
+  .quantity-grid { grid-template-columns: minmax(0, 1fr); }
+  .result.final .value, .result.total-result .value { max-width: 100%; }
+}
+
+</style></head><body><header class="topbar"><nav class="nav"><div class="brand">Rajawali <span>Kreatifbox</span></div><div class="navlinks"><a class="active" href="rajawali_box_calculator.html">Box Calculator</a><a href="rajawali_price_request.html">Price Request</a></div></nav></header><main class="page"><div class="eyebrow">Pricing Tool</div><h1>Box Calculator</h1><p class="lead">Calculate the box area, material cost, adjustable markup, and final selling price.</p><section class="grid"><div class="card"><h2>Box pricing inputs</h2>
+<div class="form-section" aria-labelledby="dimensionsHeading">
+  <h3 id="dimensionsHeading" class="section-heading">Box dimensions</h3>
+  <div class="dimension-grid">
+    <div class="field"><label for="P">Panjang (P) — mm</label><input id="P" name="P" type="number" value="600" min="0" step="any" inputmode="decimal" autocomplete="off"></div>
+    <div class="field"><label for="L">Lebar (L) — mm</label><input id="L" name="L" type="number" value="270" min="0" step="any" inputmode="decimal" autocomplete="off"></div>
+    <div class="field"><label for="T">Tinggi (T) — mm</label><input id="T" name="T" type="number" value="80" min="0" step="any" inputmode="decimal" autocomplete="off"></div>
+  </div>
+</div>
+<div class="form-section" aria-labelledby="materialHeading">
+  <h3 id="materialHeading" class="section-heading">Material & paper type</h3>
+  <div class="pair-grid">
+    <div class="field"><label for="material">Material / Substance</label><select id="material" name="material"></select></div>
+    <div class="field"><label for="paper">Paper Type</label><select id="paper" name="paper"><option value="BF">B/F</option><option value="CF">C/F</option><option value="CB">CB</option><option value="Triple">Triple</option></select></div>
+  </div>
+</div>
+<div class="form-section" aria-labelledby="quantityHeading">
+  <h3 id="quantityHeading" class="section-heading">Order quantity</h3>
+  <div class="quantity-grid">
+    <div class="field"><label for="quantity">Quantity (pcs)</label><input id="quantity" name="quantity" type="number" value="1000" min="0" step="1" inputmode="numeric" autocomplete="off"></div>
+  </div>
+</div>
+<div class="form-section" aria-labelledby="pricingAdjustmentsHeading">
+  <h3 id="pricingAdjustmentsHeading" class="section-heading">Pricing adjustments</h3>
+  <div class="pair-grid">
+    <div class="field"><label for="markup">Markup (%)</label><input id="markup" name="markup" type="number" value="40" min="0" step="0.01" inputmode="decimal"></div>
+    <div class="field"><label for="ppn">PPN (%)</label><input id="ppn" name="ppn" type="number" value="11" min="0" step="0.01" inputmode="decimal"></div>
+  </div>
+</div>
+<div class="actions"><button class="btn primary" id="calculateBtn" type="button">Calculate</button><button class="btn secondary" id="resetBtn" type="button">Reset</button></div></div><div class="card"><h2>Calculation result</h2>
+<div class="results" aria-label="Final pricing results">
+  <div class="result final">
+    <div class="result-info"><span class="label">Final price per box (incl. PPN)</span><span class="small" id="PRICESETTINGS">Markup 40% · PPN 11%</span></div>
+    <div class="value" id="FINALWITHPPN" aria-live="polite" aria-atomic="true">—</div>
+  </div>
+  <div class="result total-result">
+    <div class="result-info"><span class="label" id="GRANDTOTALLABEL">Total price for 1,000 pcs (incl. PPN)</span><span class="small">Final price per box × quantity</span></div>
+    <div class="value" id="GRANDTOTAL" aria-live="polite" aria-atomic="true">—</div>
+  </div>
+</div>
+<details class="calc-details">
+  <summary><span>Show full calculation</span><span class="disclosure-icon" aria-hidden="true"></span></summary>
+  <div class="results detail-results" aria-label="Detailed calculation">
+    <div class="result"><div class="result-info"><span class="label">A</span><span class="formula-note">A = (P + L) × 2 + 50</span></div><div class="value" id="A">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">B</span><span class="formula-note">B = L + T + 20</span></div><div class="value" id="B">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">A × B (mm²)</span><span class="formula-note">Area in mm² = A × B</span></div><div class="value" id="MM">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">Area (m²)</span><span class="formula-note">Area = A × B ÷ 1,000,000</span></div><div class="value" id="M2">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">Material price</span><span class="formula-note">Rate for selected material + paper type</span></div><div class="value" id="MP">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">HPP</span><span class="formula-note">HPP = Area × Material Price</span></div><div class="value" id="HPP">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">Markup amount</span><span class="formula-note">Markup = HPP × (Markup% ÷ 100)</span></div><div class="value" id="MU">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">Final offer (before PPN)</span><span class="formula-note">Final Offer = HPP + Markup Amount</span></div><div class="value" id="FINAL">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">PPN amount</span><span class="formula-note">PPN = Final Offer × (PPN% ÷ 100)</span></div><div class="value" id="PPNAMOUNT">—</div></div>
+    <div class="result"><div class="result-info"><span class="label">Quantity</span><span class="formula-note">Order quantity from the input</span></div><div class="value" id="RESULTQTY">—</div></div>
+  </div>
+</details>
+</div></section></main><script>const PRICES=[{"code": 1, "substance": "M125/M125/M125", "BF": 4862, "CF": 4972, "CB": 8233, "Triple": 13095}, {"code": 2, "substance": "K125/M125/M125", "BF": 5006, "CF": 5118, "CB": 8377, "Triple": 13383}, {"code": 3, "substance": "K125/M125/K125", "BF": 5151, "CF": 5262, "CB": 8522, "Triple": 13673}, {"code": 4, "substance": "K150/M125/M125", "BF": 5257, "CF": 5368, "CB": 8628, "Triple": 13885}, {"code": 5, "substance": "K150/M125/K125", "BF": 5401, "CF": 5513, "CB": 8773, "Triple": 14174}, {"code": 6, "substance": "K150/M125/K150", "BF": 5652, "CF": 5764, "CB": 9023, "Triple": 14675}, {"code": 7, "substance": "K200/M125/M125", "BF": 5980, "CF": 6095, "CB": 9480, "Triple": 15461}, {"code": 8, "substance": "K200/M125/K125", "BF": 6130, "CF": 6245, "CB": 9630, "Triple": 15760}, {"code": 9, "substance": "K200/M125/K150", "BF": 6390, "CF": 6506, "CB": 9891, "Triple": 16281}, {"code": 10, "substance": "K200/M125/K200", "BF": 6911, "CF": 7026, "CB": 10411, "Triple": 17322}, {"code": 11, "substance": "K275/M125/M125", "BF": 7411, "CF": 7531, "CB": 11041, "Triple": 18452}, {"code": 12, "substance": "K275/M125/K125", "BF": 7567, "CF": 7687, "CB": 11197, "Triple": 18764}, {"code": 13, "substance": "K275/M125/K150", "BF": 7836, "CF": 7957, "CB": 11467, "Triple": 19303}, {"code": 14, "substance": "K275/M125/K200", "BF": 8377, "CF": 8496, "CB": 12007, "Triple": 20384}, {"code": 15, "substance": "K275/M125/K275", "BF": 9929, "CF": 10052, "CB": 13689, "Triple": 23617}, {"code": 16, "substance": "W150/M125/M125", "BF": 5850, "CF": 5964, "CB": 9350, "Triple": 15200}, {"code": 17, "substance": "W150/M125/K125", "BF": 6000, "CF": 6115, "CB": 9501, "Triple": 15500}, {"code": 18, "substance": "W150/M125/K150", "BF": 6261, "CF": 6375, "CB": 9761, "Triple": 16021}, {"code": 19, "substance": "W150/M125/K200", "BF": 6781, "CF": 6897, "CB": 10282, "Triple": 17062}, {"code": 20, "substance": "W150/M125/K275", "BF": 8242, "CF": 8361, "CB": 11872, "Triple": 20114}, {"code": 21, "substance": "W150/M125/W150", "BF": 7144, "CF": 7268, "CB": 10904, "Triple": 18048}, {"code": 22, "substance": "W200/M125/M125", "BF": 6500, "CF": 6616, "CB": 10001, "Triple": 16502}, {"code": 23, "substance": "W200/M125/K125", "BF": 6651, "CF": 6766, "CB": 10151, "Triple": 16802}, {"code": 24, "substance": "W200/M125/K150", "BF": 6911, "CF": 7026, "CB": 10411, "Triple": 17322}, {"code": 25, "substance": "W200/M125/K200", "BF": 7432, "CF": 7547, "CB": 10932, "Triple": 18365}, {"code": 26, "substance": "W200/M125/K275", "BF": 8917, "CF": 9036, "CB": 12548, "Triple": 21465}, {"code": 27, "substance": "W200/M125/W150", "BF": 7842, "CF": 7966, "CB": 11602, "Triple": 19444}, {"code": 28, "substance": "K150/M150/K150", "BF": 5993, "CF": 6104, "CB": 10044, "Triple": 16037}];
+const material=document.querySelector('#material'), paper=document.querySelector('#paper'), markupInput=document.querySelector('#markup'), ppnInput=document.querySelector('#ppn');
+PRICES.forEach(x=>{const o=document.createElement('option');o.value=x.substance;o.textContent=x.substance;material.appendChild(o)});material.value='K150/M125/M125';paper.value='Triple';
+const money=n=>'Rp '+new Intl.NumberFormat('id-ID',{maximumFractionDigits:20,useGrouping:true}).format(n);
+function rowHighlight(){document.querySelectorAll('#ref tbody tr').forEach(r=>r.classList.toggle('highlight',r.dataset.s===material.value));document.querySelectorAll('#ref td.selected').forEach(c=>c.classList.remove('selected'));const r=document.querySelector(`#ref tbody tr[data-s="${CSS.escape(material.value)}"]`);if(r){const c=r.querySelector(`[data-p="${paper.value}"]`);if(c)c.classList.add('selected')}}
+function getMarkupPercent(){const value=Number(markupInput.value);return Number.isFinite(value)&&value>=0?value:0}
+function getPpnPercent(){const value=Number(ppnInput.value);return Number.isFinite(value)&&value>=0?value:0}
+function calc(){const P=Number(document.querySelector('#P').value)||0,L=Number(document.querySelector('#L').value)||0,T=Number(document.querySelector('#T').value)||0,quantity=Math.max(0,Math.floor(Number(document.querySelector('#quantity').value)||0));const A=(P+L)*2+50,B=L+T+20,mm=A*B,m2=mm/1000000,x=PRICES.find(v=>v.substance===material.value),price=x?x[paper.value]:0,hpp=m2*price,markupPercent=getMarkupPercent(),markup=hpp*(markupPercent/100),finalOffer=hpp+markup,ppnPercent=getPpnPercent(),ppnAmount=finalOffer*(ppnPercent/100),finalWithPpn=finalOffer+ppnAmount,totalWithPpn=finalWithPpn*quantity;document.querySelector('#A').textContent=moneyNumber(A);document.querySelector('#B').textContent=moneyNumber(B);document.querySelector('#MM').textContent=moneyNumber(mm);document.querySelector('#M2').textContent=String(m2);document.querySelector('#MP').textContent=money(price)+' / m²';document.querySelector('#HPP').textContent=money(hpp);document.querySelector('#MU').textContent=money(markup)+' ('+markupPercent+'%)';document.querySelector('#FINAL').textContent=money(finalOffer);document.querySelector('#PPNAMOUNT').textContent=money(ppnAmount)+' ('+ppnPercent+'%)';document.querySelector('#FINALWITHPPN').textContent=money(finalWithPpn);document.querySelector('#RESULTQTY').textContent=quantity.toLocaleString('id-ID')+' pcs';document.querySelector('#PRICESETTINGS').textContent='Markup '+markupPercent+'% · PPN '+ppnPercent+'%';document.querySelector('#GRANDTOTALLABEL').textContent='Total price for '+quantity.toLocaleString('id-ID')+' pcs (incl. PPN)';document.querySelector('#GRANDTOTAL').textContent=money(totalWithPpn);rowHighlight()}function moneyNumber(n){return new Intl.NumberFormat('id-ID',{maximumFractionDigits:20,useGrouping:true}).format(n)}
+for(const id of ['P','L','T','quantity'])document.querySelector('#'+id).addEventListener('input',calc);material.addEventListener('change',calc);paper.addEventListener('change',calc);markupInput.addEventListener('input',calc);ppnInput.addEventListener('input',calc);document.querySelector('#calculateBtn').addEventListener('click',calc);document.querySelector('#resetBtn').addEventListener('click',()=>{document.querySelector('#P').value=600;document.querySelector('#L').value=270;document.querySelector('#T').value=80;document.querySelector('#quantity').value=1000;material.value='K150/M125/M125';paper.value='Triple';markupInput.value=40;ppnInput.value=11;calc()});
+const tbody=document.querySelector('#ref tbody');PRICES.forEach(x=>{const tr=document.createElement('tr');tr.dataset.s=x.substance;tr.innerHTML=`<td>${x.code}</td><td><b>${x.substance}</b></td><td class="number" data-p="BF">Rp ${x.BF.toLocaleString('id-ID')}</td><td class="number" data-p="CF">Rp ${x.CF.toLocaleString('id-ID')}</td><td class="number" data-p="CB">Rp ${x.CB.toLocaleString('id-ID')}</td><td class="number" data-p="Triple">Rp ${x.Triple.toLocaleString('id-ID')}</td>`;tbody.appendChild(tr)});document.querySelector('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase();tbody.querySelectorAll('tr').forEach(r=>r.style.display=r.innerText.toLowerCase().includes(q)?'':'none')});calc();</script></body></html>
