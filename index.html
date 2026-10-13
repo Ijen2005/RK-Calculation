@@ -464,6 +464,19 @@ th { background: #f4f6fa !important; color: #4d556d !important; }
   .quote-header { border-bottom-color: var(--brand-blue) !important; }
   .quote-company { color: var(--brand-blue) !important; }
 }
+
+/* Reference dimensions are shown as calculated output, not editable fields. */
+.reference-output { margin-top: 18px; padding: 16px; border: 1px solid var(--blue-tint-20); border-radius: 14px; background: linear-gradient(180deg, #f7f8ff 0%, #ffffff 100%); }
+.reference-output-heading { display: flex; align-items: center; gap: 8px; color: var(--blue-hover); font-size: 12px; font-weight: 800; letter-spacing: .02em; }
+.reference-output-dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: var(--green-ink); }
+.reference-output-tag { margin-left: auto; padding: 4px 7px; border-radius: 6px; background: var(--blue-tint-10); color: var(--blue-hover); font-size: 10px; letter-spacing: .06em; }
+.reference-value-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.reference-value-card { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; padding: 13px 14px; border: 1px solid #e3e6f4; border-radius: 10px; background: #fff; }
+.reference-value-card span { color: var(--muted); font-size: 12px; font-weight: 700; }
+.reference-value-card strong { color: var(--brand-blue); font-size: clamp(23px, 2.2vw, 29px); line-height: 1.25; font-weight: 850; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.reference-value-card small { color: var(--muted); font-size: 11px; }
+@media (max-width: 420px) { .reference-output { padding: 12px; } .reference-value-grid { gap: 8px; } .reference-value-card { padding: 11px; } .reference-output-heading { flex-wrap: wrap; } }
+
 </style></head><body><header class="topbar"><nav class="nav"><div class="brand">Rajawali <span>Kreatifbox</span></div><div class="navlinks"><a class="active" aria-current="page" href="rajawali_box_calculator.html">Kalkulator Kardus</a>
   <!-- <a href="rajawali_price_request.html">Permintaan Harga</a> -->
 </div>
@@ -478,12 +491,12 @@ th { background: #f4f6fa !important; color: #4d556d !important; }
     </select>
   </div></div>
 </div>
-<div class="form-section" aria-labelledby="boxTypeHeading">
-  <h3 id="boxTypeHeading" class="section-heading">Jenis Box</h3>
+<div class="form-section" aria-labelledby="referenceConstructionHeading">
+  <h3 id="referenceConstructionHeading" class="section-heading">Jenis Konstruksi Referensi</h3>
   <div class="pair-grid">
     <div class="field">
-      <label for="boxType">Pilih jenis konstruksi</label>
-      <select id="boxType" name="boxType">
+      <label for="referenceBoxType">Pilih jenis konstruksi referensi</label>
+      <select id="referenceBoxType" name="referenceBoxType">
         <option value="A1">A1</option>
         <option value="Overlap">Overlap</option>
         <option value="Top Bottom">Top Bottom</option>
@@ -492,11 +505,22 @@ th { background: #f4f6fa !important; color: #4d556d !important; }
   </div>
 </div>
 <div class="form-section" aria-labelledby="dimensionsHeading">
-  <h3 id="dimensionsHeading" class="section-heading">Dimensi Kardus</h3>
+  <h3 id="dimensionsHeading" class="section-heading">Dimensi Referensi (P, L, T)</h3>
   <div class="dimension-grid">
     <div class="field"><label for="P">Panjang (P) — mm</label><input id="P" name="P" type="number" value="600" min="0" step="any" inputmode="decimal" autocomplete="off"></div>
     <div class="field"><label for="L">Lebar (L) — mm</label><input id="L" name="L" type="number" value="270" min="0" step="any" inputmode="decimal" autocomplete="off"></div>
     <div class="field"><label for="T">Tinggi (T) — mm</label><input id="T" name="T" type="number" value="80" min="0" step="any" inputmode="decimal" autocomplete="off"></div>
+  </div>
+</div>
+<div class="form-section" id="customDimensionReference" aria-labelledby="customDimensionReferenceHeading">
+  <h3 id="customDimensionReferenceHeading" class="section-heading">Referensi Dimensi Custom</h3>
+  <p class="small">Nilai A dan B dihitung otomatis berdasarkan jenis konstruksi referensi dan dimensi P, L, T di atas. Hasil ini hanya sebagai referensi dan tidak dapat diedit.</p>
+  <div class="reference-output" aria-live="polite" aria-label="Hasil perhitungan dimensi referensi">
+    <div class="reference-output-heading"><span class="reference-output-dot" aria-hidden="true"></span>Hasil Perhitungan Referensi <span class="reference-output-tag">OTOMATIS</span></div>
+    <div class="reference-value-grid">
+      <div class="reference-value-card"><span>Nilai A</span><strong id="referenceA">—</strong><small>mm</small></div>
+      <div class="reference-value-card"><span>Nilai B</span><strong id="referenceB">—</strong><small>mm</small></div>
+    </div>
   </div>
 </div>
 <div class="form-section" id="stockSheetDimensions" aria-labelledby="stockSheetHeading" hidden>
@@ -553,12 +577,29 @@ th { background: #f4f6fa !important; color: #4d556d !important; }
   </div>
 </details>
 </div></section></main><script>const PRICES=[{"code": 1, "substance": "M125/M125/M125", "BF": 4862, "CF": 4972, "CB": 8233, "Triple": 13095}, {"code": 2, "substance": "K125/M125/M125", "BF": 5006, "CF": 5118, "CB": 8377, "Triple": 13383}, {"code": 3, "substance": "K125/M125/K125", "BF": 5151, "CF": 5262, "CB": 8522, "Triple": 13673}, {"code": 4, "substance": "K150/M125/M125", "BF": 5257, "CF": 5368, "CB": 8628, "Triple": 13885}, {"code": 5, "substance": "K150/M125/K125", "BF": 5401, "CF": 5513, "CB": 8773, "Triple": 14174}, {"code": 6, "substance": "K150/M125/K150", "BF": 5652, "CF": 5764, "CB": 9023, "Triple": 14675}, {"code": 7, "substance": "K200/M125/M125", "BF": 5980, "CF": 6095, "CB": 9480, "Triple": 15461}, {"code": 8, "substance": "K200/M125/K125", "BF": 6130, "CF": 6245, "CB": 9630, "Triple": 15760}, {"code": 9, "substance": "K200/M125/K150", "BF": 6390, "CF": 6506, "CB": 9891, "Triple": 16281}, {"code": 10, "substance": "K200/M125/K200", "BF": 6911, "CF": 7026, "CB": 10411, "Triple": 17322}, {"code": 11, "substance": "K275/M125/M125", "BF": 7411, "CF": 7531, "CB": 11041, "Triple": 18452}, {"code": 12, "substance": "K275/M125/K125", "BF": 7567, "CF": 7687, "CB": 11197, "Triple": 18764}, {"code": 13, "substance": "K275/M125/K150", "BF": 7836, "CF": 7957, "CB": 11467, "Triple": 19303}, {"code": 14, "substance": "K275/M125/K200", "BF": 8377, "CF": 8496, "CB": 12007, "Triple": 20384}, {"code": 15, "substance": "K275/M125/K275", "BF": 9929, "CF": 10052, "CB": 13689, "Triple": 23617}, {"code": 16, "substance": "W150/M125/M125", "BF": 5850, "CF": 5964, "CB": 9350, "Triple": 15200}, {"code": 17, "substance": "W150/M125/K125", "BF": 6000, "CF": 6115, "CB": 9501, "Triple": 15500}, {"code": 18, "substance": "W150/M125/K150", "BF": 6261, "CF": 6375, "CB": 9761, "Triple": 16021}, {"code": 19, "substance": "W150/M125/K200", "BF": 6781, "CF": 6897, "CB": 10282, "Triple": 17062}, {"code": 20, "substance": "W150/M125/K275", "BF": 8242, "CF": 8361, "CB": 11872, "Triple": 20114}, {"code": 21, "substance": "W150/M125/W150", "BF": 7144, "CF": 7268, "CB": 10904, "Triple": 18048}, {"code": 22, "substance": "W200/M125/M125", "BF": 6500, "CF": 6616, "CB": 10001, "Triple": 16502}, {"code": 23, "substance": "W200/M125/K125", "BF": 6651, "CF": 6766, "CB": 10151, "Triple": 16802}, {"code": 24, "substance": "W200/M125/K150", "BF": 6911, "CF": 7026, "CB": 10411, "Triple": 17322}, {"code": 25, "substance": "W200/M125/K200", "BF": 7432, "CF": 7547, "CB": 10932, "Triple": 18365}, {"code": 26, "substance": "W200/M125/K275", "BF": 8917, "CF": 9036, "CB": 12548, "Triple": 21465}, {"code": 27, "substance": "W200/M125/W150", "BF": 7842, "CF": 7966, "CB": 11602, "Triple": 19444}, {"code": 28, "substance": "K150/M150/K150", "BF": 5993, "CF": 6104, "CB": 10044, "Triple": 16037}];
-const material=document.querySelector('#material'), paper=document.querySelector('#paper'), boxType=document.querySelector('#boxType'), calculationMode=document.querySelector('#calculationMode'), stockAInput=document.querySelector('#stockA'), stockBInput=document.querySelector('#stockB'), markupInput=document.querySelector('#markup'), ppnInput=document.querySelector('#ppn');
-PRICES.forEach(x=>{const o=document.createElement('option');o.value=x.substance;o.textContent=x.substance;material.appendChild(o)});material.value='K150/M125/M125';paper.value='Triple';boxType.value='A1';
+const material=document.querySelector('#material'), paper=document.querySelector('#paper'), referenceBoxType=document.querySelector('#referenceBoxType'), calculationMode=document.querySelector('#calculationMode'), stockAInput=document.querySelector('#stockA'), stockBInput=document.querySelector('#stockB'), markupInput=document.querySelector('#markup'), ppnInput=document.querySelector('#ppn');
+PRICES.forEach(x=>{const o=document.createElement('option');o.value=x.substance;o.textContent=x.substance;material.appendChild(o)});material.value='K150/M125/M125';paper.value='Triple';referenceBoxType.value='A1';
 const money=n=>'Rp '+new Intl.NumberFormat('id-ID',{maximumFractionDigits:20,useGrouping:true}).format(n);
 function rowHighlight(){document.querySelectorAll('#ref tbody tr').forEach(r=>r.classList.toggle('highlight',r.dataset.s===material.value));document.querySelectorAll('#ref td.selected').forEach(c=>c.classList.remove('selected'));const r=document.querySelector(`#ref tbody tr[data-s="${CSS.escape(material.value)}"]`);if(r){const c=r.querySelector(`[data-p="${paper.value}"]`);if(c)c.classList.add('selected')}}
 function getMarkupPercent(){const value=Number(markupInput.value);return Number.isFinite(value)&&value>=0?value:0}
 function getPpnPercent(){const value=Number(ppnInput.value);return Number.isFinite(value)&&value>=0?value:0}
+function getCustomDimensions(){
+  const P=Number(document.querySelector('#P').value)||0;
+  const L=Number(document.querySelector('#L').value)||0;
+  const T=Number(document.querySelector('#T').value)||0;
+  const type=referenceBoxType.value;
+  let A,B;
+  if(type==='Overlap'){ A=(P+L)*2+50; B=L+L+T+10; }
+  else if(type==='Top Bottom'){ A=P+2*T+30; B=L+2*T+30; }
+  else { A=(P+L)*2+50; B=L+T+20; }
+  return {P,L,T,A,B};
+}
+function updateCustomDimensionReference(){
+  const d=getCustomDimensions();
+  // Keep calculated A/B in sync when P/L/T or construction type changes.
+  document.querySelector('#referenceA').textContent=new Intl.NumberFormat('id-ID',{maximumFractionDigits:10}).format(d.A);
+  document.querySelector('#referenceB').textContent=new Intl.NumberFormat('id-ID',{maximumFractionDigits:10}).format(d.B);
+}
 function calc(){
   const isStockSheet=calculationMode.value==='stock';
   const P=Number(document.querySelector('#P').value)||0;
@@ -571,10 +612,10 @@ function calc(){
   if(isStockSheet){
     A=manualA;
     B=manualB;
-  }else if(boxType.value==='Overlap'){
+  }else if(referenceBoxType.value==='Overlap'){
     A=(P+L)*2+50;
     B=L+L+T+10;
-  }else if(boxType.value==='Top Bottom'){
+  }else if(referenceBoxType.value==='Top Bottom'){
     A=P+2*T+30;
     B=L+2*T+30;
     areaMultiplier=2;
@@ -595,22 +636,27 @@ function calc(){
   document.querySelector('#PPNAMOUNT').textContent=money(ppnAmount)+' ('+ppnPercent+'%)';
   document.querySelector('#FINALWITHPPN').textContent=moneyPerBox(finalWithPpn);
   document.querySelector('#RESULTQTY').textContent=quantity.toLocaleString('id-ID')+' pcs';
-  document.querySelector('#PRICESETTINGS').textContent=(isStockSheet?'Stock Sheet':'Custom · '+boxType.value)+' · Markup '+markupPercent+'% · PPN '+ppnPercent+'%';
+  document.querySelector('#PRICESETTINGS').textContent=(isStockSheet?'Stock Sheet':'Custom · '+referenceBoxType.value)+' · Markup '+markupPercent+'% · PPN '+ppnPercent+'%';
   document.querySelector('#GRANDTOTALLABEL').textContent='Total harga untuk '+quantity.toLocaleString('id-ID')+' pcs (termasuk PPN)';
   document.querySelector('#GRANDTOTAL').textContent=moneyWhole(Math.round(totalWithPpn));
-  document.querySelector('#formulaA').textContent=isStockSheet?'A = Nilai A yang dimasukkan manual':boxType.value==='Top Bottom'?'A = P + 2T + 30':'A = (P + L) × 2 + 50';
-  document.querySelector('#formulaB').textContent=isStockSheet?'B = Nilai B yang dimasukkan manual':boxType.value==='Overlap'?'B = L + L + T + 10':boxType.value==='Top Bottom'?'B = L + 2T + 30':'B = L + T + 20';
+  document.querySelector('#formulaA').textContent=isStockSheet?'A = Nilai A yang dimasukkan manual':referenceBoxType.value==='Top Bottom'?'A = P + 2T + 30':'A = (P + L) × 2 + 50';
+  document.querySelector('#formulaB').textContent=isStockSheet?'B = Nilai B yang dimasukkan manual':referenceBoxType.value==='Overlap'?'B = L + L + T + 10':referenceBoxType.value==='Top Bottom'?'B = L + 2T + 30':'B = L + T + 20';
   document.querySelector('#MM_LABEL').textContent=areaMultiplier===2?'A × B × 2 (mm²)':'A × B (mm²)';
   document.querySelector('#formulaMM').textContent=areaMultiplier===2?'Luas dalam mm² = A × B × 2':'Luas dalam mm² = A × B';
   document.querySelector('#formulaM2').textContent=areaMultiplier===2?'Luas = A × B × 2 ÷ 1.000.000':'Luas = A × B ÷ 1.000.000';
   rowHighlight();
 }function moneyPerBox(n){return 'Rp '+new Intl.NumberFormat('id-ID',{maximumFractionDigits:3,useGrouping:true}).format(n)}function moneyWhole(n){return 'Rp '+new Intl.NumberFormat('id-ID',{maximumFractionDigits:0,useGrouping:true}).format(n)}function moneyNumber(n){return new Intl.NumberFormat('id-ID',{maximumFractionDigits:20,useGrouping:true}).format(n)}
-for(const id of ['P','L','T','quantity','stockA','stockB'])document.querySelector('#'+id).addEventListener('input',calc);material.addEventListener('change',calc);paper.addEventListener('change',calc);boxType.addEventListener('change',calc);markupInput.addEventListener('input',calc);ppnInput.addEventListener('input',calc);function updateCalculationMode(){const isStockSheet=calculationMode.value==='stock';boxType.closest('.form-section').hidden=isStockSheet;document.querySelector('#dimensionsHeading').closest('.form-section').hidden=isStockSheet;document.querySelector('#stockSheetDimensions').hidden=!isStockSheet;calc()}calculationMode.addEventListener('change',updateCalculationMode);document.querySelector('#calculateBtn').addEventListener('click',calc);function resetCalculator(){
+for(const id of ['P','L','T','quantity','stockA','stockB'])document.querySelector('#'+id).addEventListener('input',calc);material.addEventListener('change',calc);paper.addEventListener('change',calc);referenceBoxType.addEventListener('change',()=>{updateCustomDimensionReference();calc()});markupInput.addEventListener('input',calc);ppnInput.addEventListener('input',calc);
+for(const id of ['P','L','T'])document.querySelector('#'+id).addEventListener('input',()=>{updateCustomDimensionReference();calc()});
+function updateCalculationMode(){const isStockSheet=calculationMode.value==='stock';document.querySelector('#stockSheetDimensions').hidden=!isStockSheet;calc()}calculationMode.addEventListener('change',updateCalculationMode);
+document.querySelector('#calculateBtn').addEventListener('click',calc);function resetCalculator(){
   // Restore every calculator input to its original default.
   document.querySelector('#P').value = '600';
   document.querySelector('#L').value = '270';
   document.querySelector('#T').value = '80';
-  boxType.value = 'A1';
+  document.querySelector('#referenceBoxType').value = 'A1';
+  updateCustomDimensionReference();
+  referenceBoxType.value = 'A1';
   calculationMode.value = 'custom';
   stockAInput.value = '';
   stockBInput.value = '';
@@ -635,4 +681,4 @@ for(const id of ['P','L','T','quantity','stockA','stockB'])document.querySelecto
   updateCalculationMode();
 }
 document.querySelector('#resetBtn').addEventListener('click', resetCalculator);
-updateCalculationMode();</script></body></html>
+updateCustomDimensionReference();updateCalculationMode();</script></body></html>
