@@ -464,6 +464,19 @@ th { background: #f4f6fa !important; color: #4d556d !important; }
   .quote-header { border-bottom-color: var(--brand-blue) !important; }
   .quote-company { color: var(--brand-blue) !important; }
 }
+
+/* Highlight HPP in Rajawali brand red */
+.detail-results .hpp-result {
+  background: var(--red-tint-05) !important;
+  border-color: var(--red-tint-20) !important;
+}
+.detail-results .hpp-result .label,
+.detail-results .hpp-result .value {
+  color: var(--red-ink) !important;
+}
+.detail-results .hpp-result .formula-note {
+  color: var(--red-ink) !important;
+}
 </style></head><body><header class="topbar"><nav class="nav"><div class="brand">Rajawali <span>Kreatifbox</span></div><div class="navlinks"><a class="active" aria-current="page" href="rajawali_box_calculator.html">Kalkulator Kardus</a>
   <!-- <a href="rajawali_price_request.html">Permintaan Harga</a> -->
 </div>
@@ -545,7 +558,7 @@ th { background: #f4f6fa !important; color: #4d556d !important; }
     <div class="result"><div class="result-info"><span class="label" id="MM_LABEL">A × B (mm²)</span><span class="formula-note" id="formulaMM">Luas dalam mm² = A × B</span></div><div class="value" id="MM">—</div></div>
     <div class="result"><div class="result-info"><span class="label">Luas (m²)</span><span class="formula-note" id="formulaM2">Luas = A × B ÷ 1.000.000</span></div><div class="value" id="M2">—</div></div>
     <div class="result"><div class="result-info"><span class="label">Harga bahan</span><span class="formula-note">Harga untuk komposisi bahan dan jenis kertas yang dipilih</span></div><div class="value" id="MP">—</div></div>
-    <div class="result"><div class="result-info"><span class="label">HPP</span><span class="formula-note">HPP = Luas × Harga Bahan</span></div><div class="value" id="HPP">—</div></div>
+    <div class="result hpp-result"><div class="result-info"><span class="label">HPP</span><span class="formula-note">HPP = Luas × Harga Bahan</span></div><div class="value" id="HPP">—</div></div>
     <div class="result"><div class="result-info"><span class="label">Nilai markup</span><span class="formula-note">Nilai markup = HPP × (Markup% ÷ 100)</span></div><div class="value" id="MU">—</div></div>
     <div class="result"><div class="result-info"><span class="label">Harga penawaran (sebelum PPN)</span><span class="formula-note">Harga Penawaran = HPP + Nilai Markup</span></div><div class="value" id="FINAL">—</div></div>
     <div class="result"><div class="result-info"><span class="label">Nilai PPN</span><span class="formula-note">PPN = Harga Penawaran × (PPN% ÷ 100)</span></div><div class="value" id="PPNAMOUNT">—</div></div>
